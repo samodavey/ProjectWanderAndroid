@@ -1,4 +1,4 @@
-package com.example.projectwander
+package com.example.wander
 
 import org.junit.Test
 

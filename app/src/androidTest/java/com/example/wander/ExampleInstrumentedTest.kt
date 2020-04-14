@@ -1,4 +1,4 @@
-package com.example.projectwander
+package com.example.wander
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

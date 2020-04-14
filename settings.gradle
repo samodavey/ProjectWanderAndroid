@@ -1,2 +1,2 @@
-rootProject.name='ProjectWander'
+rootProject.name='Wander'
 include ':app'

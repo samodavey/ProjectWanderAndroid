@@ -1,12 +1,12 @@
-package com.example.projectwander
+package com.example.wander
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class StartupActivity : AppCompatActivity() {
+class SignupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_startup)
+        setContentView(R.layout.activity_signup)
     }
 }
