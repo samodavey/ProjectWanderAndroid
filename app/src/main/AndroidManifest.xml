@@ -8,7 +8,7 @@
         android:icon="@drawable/tinder_clone_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.NoActionBar">
         <activity android:name="com.example.wander.SignupActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.wander.MainActivity"
+        <activity android:name="com.example.wander.WanderActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity">
