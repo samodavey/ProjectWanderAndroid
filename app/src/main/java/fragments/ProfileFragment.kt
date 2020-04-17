@@ -7,11 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.example.wander.R
+import com.example.wander.WanderCallback
+import com.google.firebase.database.DatabaseReference
 
-/**
- * A simple [Fragment] subclass.
- */
+
 class ProfileFragment : Fragment() {
+
+
+
+    private lateinit var userId: String
+    private lateinit var userDatabase: DatabaseReference
+    private var callback: WanderCallback? = null
+
+    fun setCallback(callback: WanderCallback){
+        this.callback = callback
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

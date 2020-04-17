@@ -8,8 +8,8 @@
 
     <EditText
         android:id="@+id/emailET"
-        android:layout_width="@dimen/standard_btn_width"
-        android:layout_height="@dimen/standard_btn_height"
+        android:layout_width="@dimen/standard_width"
+        android:layout_height="@dimen/standard_height"
         android:hint="@string/hint_email"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,8 +18,8 @@
 
     <EditText
         android:id="@+id/passwordET"
-        android:layout_width="@dimen/standard_btn_width"
-        android:layout_height="@dimen/standard_btn_height"
+        android:layout_width="@dimen/standard_width"
+        android:layout_height="@dimen/standard_height"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,8 +29,8 @@
     <Button
         android:id="@+id/loginBtn"
         style="@style/StandardButton"
-        android:layout_width="@dimen/standard_btn_width"
-        android:layout_height="@dimen/standard_btn_height"
+        android:layout_width="@dimen/standard_width"
+        android:layout_height="@dimen/standard_height"
         android:onClick="onSignup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
