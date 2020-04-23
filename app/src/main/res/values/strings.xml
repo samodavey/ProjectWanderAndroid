@@ -15,5 +15,6 @@
     <string name="hint_preferred_gender">Looking for a</string>
     <string name="btn_signout">Sign Out</string>
     <string name="btn_apply">Apply</string>
+    <string name="error_profile_incomplete">Please complete your profile</string>
 
 </resources>

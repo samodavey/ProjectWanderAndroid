@@ -113,6 +113,10 @@ class WanderActivity : AppCompatActivity(), WanderCallback{
 
     override fun onGetUserId(): String = userId!!
 
+    override fun profileComplete() {
+        swipeTab?.select()
+    }
+
     override fun getUserDatabase(): DatabaseReference = userDatabase
 }
 

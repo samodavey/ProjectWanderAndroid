@@ -6,4 +6,5 @@ interface WanderCallback {
     fun onSignout()
     fun onGetUserId(): String
     fun getUserDatabase(): DatabaseReference
+    fun profileComplete()
 }
