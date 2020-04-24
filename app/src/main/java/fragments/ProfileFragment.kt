@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isGone
+import com.bumptech.glide.Glide
 
 import com.example.wander.R
 import com.example.wander.WanderCallback
@@ -80,6 +81,11 @@ class ProfileFragment : Fragment() {
                     if(user?.preferredGender == GENDER_FEMALE){
                         radioWoman2.isChecked = true
                     }
+
+                    if(!user?.imageUrl.isNullOrEmpty()){
+                        populateImage(user?.imageUrl!!)
+                    }
+
                     progressLayout.visibility = View.GONE
                 }
             }
@@ -117,6 +123,16 @@ class ProfileFragment : Fragment() {
 
     fun updateImageUri(uri:String){
         userDatabase.child(DATA_IMAGE_URL).setValue(uri)
+        Glide.with(this)
+            .load(uri)
+            .into(photoIV)
+        populateImage(uri)
+    }
+
+    fun populateImage(uri: String) {
+        Glide.with(this)
+            .load(uri)
+            .into(photoIV)
     }
 
 
