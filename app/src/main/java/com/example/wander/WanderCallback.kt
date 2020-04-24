@@ -7,4 +7,5 @@ interface WanderCallback {
     fun onGetUserId(): String
     fun getUserDatabase(): DatabaseReference
     fun profileComplete()
+    fun startPhotoActivity()
 }

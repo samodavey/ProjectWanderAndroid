@@ -48,6 +48,8 @@ class ProfileFragment : Fragment() {
 
         populateInfo()
 
+        photoIV.setOnClickListener{callback?.startPhotoActivity()}
+
         applyButton.setOnClickListener{onApply()}
         signOutButton.setOnClickListener {callback?.onSignout()}
     }
@@ -111,6 +113,10 @@ class ProfileFragment : Fragment() {
 
             callback?.profileComplete()
         }
+    }
+
+    fun updateImageUri(uri:String){
+        userDatabase.child(DATA_IMAGE_URL).setValue(uri)
     }
 
 
