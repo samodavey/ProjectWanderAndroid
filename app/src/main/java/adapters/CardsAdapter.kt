@@ -22,7 +22,7 @@ class CardsAdapter(context: Context?, resourceId: Int, users: List<User>): Array
 
 
         //Check the null check for the imageUrl
-        name.text = "$(user.name), $(user.age)"
+        name.text = "${user?.name}, ${user?.age}"
         Glide.with(context)
             .load(user?.imageUrl)
             .into(image)

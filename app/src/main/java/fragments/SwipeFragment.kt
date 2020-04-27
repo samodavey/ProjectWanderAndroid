@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 
 import com.example.wander.R
 import com.example.wander.WanderCallback
@@ -68,15 +69,40 @@ class SwipeFragment : Fragment() {
         frame.adapter = cardsAdapter
         frame.setFlingListener(object : SwipeFlingAdapterView.onFlingListener{
             override fun removeFirstObjectInAdapter() {
-
+                //This gets rid of the first card
+                rowItems.removeAt(0)
+                cardsAdapter?.notifyDataSetChanged()
             }
 
             override fun onLeftCardExit(p0: Any?) {
+                var user = p0 as User
+                //Update database
+                userDatabase.child(user.uid.toString()).child(DATA_SWIPES_LEFT).child(userId).setValue(true)
 
             }
 
             override fun onRightCardExit(p0: Any?) {
+                var selectedUser = p0 as User
+                var selectedUserId = selectedUser.uid
+                if(!selectedUserId.isNullOrEmpty()){
+                    userDatabase.child(userId).child(DATA_SWIPES_RIGHT).addListenerForSingleValueEvent(object: ValueEventListener{
+                        override fun onCancelled(p0: DatabaseError) {
+                        }
 
+                        override fun onDataChange(p0: DataSnapshot) {
+                            if(p0.hasChild(selectedUserId)){
+                                Toast.makeText(context,"Match!", Toast.LENGTH_SHORT).show()
+
+                                userDatabase.child(userId).child(DATA_SWIPES_RIGHT).child(selectedUserId).removeValue()
+                                userDatabase.child(userId).child(DATA_MATCHES).child(selectedUserId).setValue(true)
+                                userDatabase.child(selectedUserId).child(DATA_MATCHES).child(userId).setValue(true)
+                            }else{
+                                userDatabase.child(selectedUserId).child(DATA_SWIPES_RIGHT).child(userId).setValue(true)
+                            }
+                        }
+
+                    })
+                }
             }
 
             override fun onAdapterAboutToEmpty(p0: Int) {
@@ -87,6 +113,21 @@ class SwipeFragment : Fragment() {
 
             }
         })
+
+
+        //If the like button is clicked
+        likeButton.setOnClickListener{
+            if(!rowItems.isEmpty()){
+                frame.topCardListener.selectRight()
+            }
+        }
+
+        //if the dislike button is clicked
+        dislikeButton.setOnClickListener{
+            if(!rowItems.isEmpty()){
+                frame.topCardListener.selectLeft()
+            }
+        }
 
     }
 
@@ -107,8 +148,8 @@ class SwipeFragment : Fragment() {
                     if(user != null){
                         var showUser = true
                         //If this user already has me in their swipe left, don't display
-                        if(child.child(DATA_SWIPES_LEFT).hasChild(userId) && child.child(
-                                DATA_SWIPES_RIGHT).hasChild(userId) && child.child(DATA_MATCHES).hasChild(userId) ){
+                        if(child.child(DATA_SWIPES_LEFT).hasChild(userId) || child.child(
+                                DATA_SWIPES_RIGHT).hasChild(userId) || child.child(DATA_MATCHES).hasChild(userId) ){
                             showUser = false
                         }
                         if(showUser){
