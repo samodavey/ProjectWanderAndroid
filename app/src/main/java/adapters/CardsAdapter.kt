@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.wander.R
+import com.example.wander.UserInfoActivity
 import util.User
 
 class CardsAdapter(context: Context?, resourceId: Int, users: List<User>): ArrayAdapter<User>(context!!, resourceId, users) {
@@ -19,6 +21,7 @@ class CardsAdapter(context: Context?, resourceId: Int, users: List<User>): Array
 
         var name = finalView.findViewById<TextView>(R.id.nameTV)
         var image = finalView.findViewById<ImageView>(R.id.photoIV)
+        var userInfo = finalView.findViewById<LinearLayout>(R.id.userInfoLayout)
 
 
         //Check the null check for the imageUrl
@@ -26,6 +29,10 @@ class CardsAdapter(context: Context?, resourceId: Int, users: List<User>): Array
         Glide.with(context)
             .load(user?.imageUrl)
             .into(image)
+
+        userInfo.setOnClickListener{
+            finalView.context.startActivity(UserInfoActivity.newIntent(finalView.context, user?.uid))
+        }
 
         return finalView
     }

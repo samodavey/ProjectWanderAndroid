@@ -24,6 +24,7 @@ class ProfileFragment : Fragment() {
 
 
 
+    //Should create a profile frag an edit profile activity at some point
     private lateinit var userId: String
     private lateinit var userDatabase: DatabaseReference
     private var callback: WanderCallback? = null

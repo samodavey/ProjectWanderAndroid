@@ -9,18 +9,19 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name="com.example.wander.SignupActivity"
+        <activity android:name=".UserInfoActivity"></activity>
+        <activity
+            android:name=".SignupActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            tools:ignore="LockedOrientationActivity">
-        </activity>
-
-        <activity android:name="com.example.wander.LoginActivity"
+            tools:ignore="LockedOrientationActivity"></activity>
+        <activity
+            android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            tools:ignore="LockedOrientationActivity"/>
-
-        <activity android:name="com.example.wander.StartupActivity"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".StartupActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="LockedOrientationActivity">
@@ -30,11 +31,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.wander.WanderActivity"
+        <activity
+            android:name=".WanderActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
-            tools:ignore="LockedOrientationActivity">
-        </activity>
+            tools:ignore="LockedOrientationActivity"></activity>
     </application>
 
 </manifest>

@@ -114,6 +114,7 @@ class SwipeFragment : Fragment() {
             }
         })
 
+        frame.setOnItemClickListener{position, data -> }
 
         //If the like button is clicked
         likeButton.setOnClickListener{
