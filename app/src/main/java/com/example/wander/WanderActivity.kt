@@ -8,9 +8,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
@@ -18,11 +15,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import com.lorentzos.flingswipe.SwipeFlingAdapterView
-import fragments.MatchesFragment
+import fragments.ChatsFragment
 import fragments.ProfileFragment
 import fragments.SwipeFragment
 import kotlinx.android.synthetic.main.activity_main.*
+import util.DATA_CHATS
 import util.DATA_USERS
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -34,10 +31,12 @@ class WanderActivity : AppCompatActivity(), WanderCallback{
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val userId = firebaseAuth.currentUser?.uid
     private lateinit var userDatabase: DatabaseReference
+    private lateinit var chatDatabase: DatabaseReference
+
 
     private var profileFragment: ProfileFragment? = null
     private var swipeFragment: SwipeFragment? = null
-    private var matchesFragment: MatchesFragment? = null
+    private var chatsFragment: ChatsFragment? = null
 
     private var profileTab: TabLayout.Tab? = null
     private var swipeTab: TabLayout.Tab? = null
@@ -54,6 +53,7 @@ class WanderActivity : AppCompatActivity(), WanderCallback{
         }
 
         userDatabase = FirebaseDatabase.getInstance().reference.child(DATA_USERS)
+        chatDatabase = FirebaseDatabase.getInstance().reference.child(DATA_CHATS)
 
         profileTab = navigation_tabs.newTab()
         swipeTab = navigation_tabs.newTab()
@@ -92,11 +92,11 @@ class WanderActivity : AppCompatActivity(), WanderCallback{
                         replaceFragment(swipeFragment!!)
                     }
                     matchesTab->{
-                        if(matchesFragment == null){
-                            matchesFragment = MatchesFragment()
-                            matchesFragment!!.setCallback(this@WanderActivity)
+                        if(chatsFragment == null){
+                            chatsFragment = ChatsFragment()
+                            chatsFragment!!.setCallback(this@WanderActivity)
                         }
-                        replaceFragment(matchesFragment!!)
+                        replaceFragment(chatsFragment!!)
                     }
                 }
             }
@@ -176,6 +176,8 @@ class WanderActivity : AppCompatActivity(), WanderCallback{
     }
 
     override fun getUserDatabase(): DatabaseReference = userDatabase
+
+    override fun getChatDatabase(): DatabaseReference = chatDatabase
 }
 
 

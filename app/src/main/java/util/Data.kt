@@ -10,3 +10,11 @@ data class User(
     val imageUrl: String? = ""
     //val preferredActivities: String? = "",
 )
+
+data class Chat(
+    val userId: String? = "",
+    val chatId: String? = "",
+    val otherUserId: String? = "",
+    val name: String? = "",
+    val imageUrl: String? = ""
+)
