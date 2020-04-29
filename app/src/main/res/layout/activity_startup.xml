@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_margin="@dimen/startup_logo_margin"
+        android:layout_gravity="center"
         app:srcCompat="@drawable/tinder_clone_logo" />
 
     <Button
