@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.wander.ChatActivity
 import com.example.wander.R
 import util.Chat
 
@@ -30,7 +31,8 @@ class ChatsAdapter(private var chats : ArrayList<Chat>): RecyclerView.Adapter<Ch
 
             //Listener which will send us to the chat screen
             layout.setOnClickListener {
-
+                val intent = ChatActivity.newIntent(view.context, chat.chatId, chat.userId,chat.imageUrl,chat.otherUserId)
+                view.context.startActivity(intent)
             }
         }
     }
