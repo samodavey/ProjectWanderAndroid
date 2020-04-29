@@ -25,20 +25,27 @@ import util.*
 class SwipeFragment : Fragment() {
 
     private var callback: WanderCallback? = null
-    private lateinit var userId : String
-    private lateinit var userDatabase : DatabaseReference
+    private lateinit var userId: String
+    private lateinit var userDatabase: DatabaseReference
+    private lateinit var chatDatabase: DatabaseReference
+
     //Puts the items in the array into a view
-    private var cardsAdapter : ArrayAdapter<User>? = null
+    private var cardsAdapter: ArrayAdapter<User>? = null
+
     //Array of items
     private var rowItems = ArrayList<User>()
+
     //Variable to reference against when filtering by gender type
-    private var preferredGender : String? = null
+    private var preferredGender: String? = null
+    private var userName: String? = null
+    private var imageUrl: String? = null
 
 
-    fun setCallback(callback: WanderCallback){
+    fun setCallback(callback: WanderCallback) {
         this.callback = callback
         userId = callback.onGetUserId()
         userDatabase = callback.getUserDatabase()
+        chatDatabase = callback.getChatDatabase()
     }
 
     override fun onCreateView(
@@ -53,13 +60,15 @@ class SwipeFragment : Fragment() {
 
         super.onViewCreated(view, savedInstanceState)
 
-        userDatabase.child(userId).addListenerForSingleValueEvent(object : ValueEventListener{
+        userDatabase.child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
                 val user = p0.getValue(User::class.java)
                 preferredGender = user?.preferredGender
+                userName = user?.name
+                imageUrl = user?.imageUrl
                 populateItems()
             }
         })
@@ -67,7 +76,7 @@ class SwipeFragment : Fragment() {
         cardsAdapter = CardsAdapter(context, R.layout.item, rowItems)
 
         frame.adapter = cardsAdapter
-        frame.setFlingListener(object : SwipeFlingAdapterView.onFlingListener{
+        frame.setFlingListener(object : SwipeFlingAdapterView.onFlingListener {
             override fun removeFirstObjectInAdapter() {
                 //This gets rid of the first card
                 rowItems.removeAt(0)
@@ -77,31 +86,54 @@ class SwipeFragment : Fragment() {
             override fun onLeftCardExit(p0: Any?) {
                 var user = p0 as User
                 //Update database
-                userDatabase.child(user.uid.toString()).child(DATA_SWIPES_LEFT).child(userId).setValue(true)
+                userDatabase.child(user.uid.toString()).child(DATA_SWIPES_LEFT).child(userId)
+                    .setValue(true)
 
             }
 
             override fun onRightCardExit(p0: Any?) {
                 var selectedUser = p0 as User
                 var selectedUserId = selectedUser.uid
-                if(!selectedUserId.isNullOrEmpty()){
-                    userDatabase.child(userId).child(DATA_SWIPES_RIGHT).addListenerForSingleValueEvent(object: ValueEventListener{
-                        override fun onCancelled(p0: DatabaseError) {
-                        }
-
-                        override fun onDataChange(p0: DataSnapshot) {
-                            if(p0.hasChild(selectedUserId)){
-                                Toast.makeText(context,"Match!", Toast.LENGTH_SHORT).show()
-
-                                userDatabase.child(userId).child(DATA_SWIPES_RIGHT).child(selectedUserId).removeValue()
-                                userDatabase.child(userId).child(DATA_MATCHES).child(selectedUserId).setValue(true)
-                                userDatabase.child(selectedUserId).child(DATA_MATCHES).child(userId).setValue(true)
-                            }else{
-                                userDatabase.child(selectedUserId).child(DATA_SWIPES_RIGHT).child(userId).setValue(true)
+                if (!selectedUserId.isNullOrEmpty()) {
+                    userDatabase.child(userId).child(DATA_SWIPES_RIGHT)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
                             }
-                        }
 
-                    })
+                            override fun onDataChange(p0: DataSnapshot) {
+                                if (p0.hasChild(selectedUserId)) {
+                                    Toast.makeText(context, "Match!", Toast.LENGTH_SHORT).show()
+
+                                    //Generates a key for the chat database
+                                    val chatKey = chatDatabase.push().key
+
+                                    if (chatKey != null) {
+                                        userDatabase.child(userId).child(DATA_SWIPES_RIGHT)
+                                            .child(selectedUserId).removeValue()
+                                        userDatabase.child(userId).child(DATA_MATCHES)
+                                            .child(selectedUserId).setValue(chatKey)
+                                        userDatabase.child(selectedUserId).child(DATA_MATCHES)
+                                            .child(userId).setValue(chatKey)
+
+                                        //Put the user name and imageUrl into the chat view
+                                        chatDatabase.child(chatKey).child(userId).child(DATA_NAME)
+                                            .setValue(userName)
+                                        chatDatabase.child(chatKey).child(userId)
+                                            .child(DATA_IMAGE_URL).setValue(imageUrl)
+
+                                        //Do the same for the opposite user
+                                        chatDatabase.child(chatKey).child(selectedUserId)
+                                            .child(DATA_NAME).setValue(selectedUser.name)
+                                        chatDatabase.child(chatKey).child(selectedUserId)
+                                            .child(DATA_IMAGE_URL).setValue(selectedUser.imageUrl)
+                                    }
+                                } else {
+                                    userDatabase.child(selectedUserId).child(DATA_SWIPES_RIGHT)
+                                        .child(userId).setValue(true)
+                                }
+                            }
+
+                        })
                 }
             }
 
@@ -114,46 +146,48 @@ class SwipeFragment : Fragment() {
             }
         })
 
-        frame.setOnItemClickListener{position, data -> }
+        frame.setOnItemClickListener { position, data -> }
 
         //If the like button is clicked
-        likeButton.setOnClickListener{
-            if(!rowItems.isEmpty()){
+        likeButton.setOnClickListener {
+            if (!rowItems.isEmpty()) {
                 frame.topCardListener.selectRight()
             }
         }
 
         //if the dislike button is clicked
-        dislikeButton.setOnClickListener{
-            if(!rowItems.isEmpty()){
+        dislikeButton.setOnClickListener {
+            if (!rowItems.isEmpty()) {
                 frame.topCardListener.selectLeft()
             }
         }
 
     }
 
-    fun populateItems(){
+    fun populateItems() {
         noUsers.visibility = View.GONE
         progressLayout.visibility = View.VISIBLE
 
         //This variable gets all the data required for gender preference and orders it accordingly
         val cardsQuery = userDatabase.orderByChild(DATA_GENDER).equalTo(preferredGender)
-        cardsQuery.addListenerForSingleValueEvent(object: ValueEventListener{
+        cardsQuery.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
                 //If we have already seen this user we don't need to show it
-                p0.children.forEach{child ->
+                p0.children.forEach { child ->
                     val user = child.getValue(User::class.java)
-                    if(user != null){
+                    if (user != null) {
                         var showUser = true
                         //If this user already has me in their swipe left, don't display
-                        if(child.child(DATA_SWIPES_LEFT).hasChild(userId) || child.child(
-                                DATA_SWIPES_RIGHT).hasChild(userId) || child.child(DATA_MATCHES).hasChild(userId) ){
+                        if (child.child(DATA_SWIPES_LEFT).hasChild(userId) || child.child(
+                                DATA_SWIPES_RIGHT
+                            ).hasChild(userId) || child.child(DATA_MATCHES).hasChild(userId)
+                        ) {
                             showUser = false
                         }
-                        if(showUser){
+                        if (showUser) {
                             //Let the adapter know we have updated it
                             rowItems.add(user)
                             cardsAdapter?.notifyDataSetChanged()
@@ -162,7 +196,7 @@ class SwipeFragment : Fragment() {
                 }
                 progressLayout.visibility = View.GONE
                 //If the row items is empty display the "No users available layout"
-                if(rowItems.isEmpty()){
+                if (rowItems.isEmpty()) {
                     noUsers.visibility = View.VISIBLE
                 }
             }
